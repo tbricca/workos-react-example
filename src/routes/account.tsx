@@ -8,8 +8,13 @@ import '@radix-ui/themes/styles.css'; // Import Radix styles
 
 export default function Account() {
   const user = useUser();
-  const { role, organizationId, getToken } = useAuth();
-  const [authToken, setAuthToken] = useState(null); // Manage the token state
+
+  const auth = useAuth() as ReturnType<typeof useAuth> & {
+    getToken: () => Promise<string>;
+  };
+
+  const { getToken, role, organizationId } = auth;
+  const [authToken, setAuthToken] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -25,7 +30,7 @@ export default function Account() {
   }, [getToken]);
 
   if (!user) {
-    return "...";
+    return <Text align="center">Loading user...</Text>;
   }
 
   const userFields = [
@@ -41,7 +46,9 @@ export default function Account() {
     <>
       <Flex direction="column" gap="2" mb="7">
         <Heading size="8" align="center">Account details</Heading>
-        <Text size="5" align="center" color="gray">Below are your account details</Text>
+        <Text size="5" align="center" color="gray">
+          Below are your account details
+        </Text>
 
         <RadixButton
           onClick={() => alert(`Token: ${authToken || "Fetching token..."}`)}
@@ -52,7 +59,7 @@ export default function Account() {
         </RadixButton>
       </Flex>
 
-      {userFields && (
+      {userFields.length > 0 && (
         <Flex direction="column" justify="center" gap="3" width="400px">
           {userFields.map(([label, value]) => (
             <Flex asChild align="center" gap="6" key={label}>
@@ -66,8 +73,7 @@ export default function Account() {
           ))}
         </Flex>
       )}
-4
-      {/* Conditionally render the UsersManagement widget if the token is available */}
+
       {authToken && (
         <WorkOsWidgets theme={{ appearance: 'light' }}>
           <UsersManagement authToken={authToken} />
