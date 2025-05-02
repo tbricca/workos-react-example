@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Flex, Heading, Text, TextField } from "@radix-ui/themes";
 import { useUser } from "../hooks/use-user";
 import { useAuth } from "@workos-inc/authkit-react";
